@@ -1,0 +1,19 @@
+{
+  "name": "lapp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "debug": "^2.6.9",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "mysqli": "^3.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
