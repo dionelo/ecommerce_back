@@ -6,16 +6,16 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
-// LOGIN ROUTE
+// Login route
 router.post('/login', [helper.hasAuthFields, helper.isPasswordAndUserMatch], (req, res) => {
     let token = jwt.sign({state: 'true', email: req.body.email, username: req.body.username}, helper.secret, {
         algorithm: 'HS512',
         expiresIn: '4h'
-    })
+    });
     res.json({token: token, auth: true, email: req.body.email, username: req.body.username})
 })
 
-// REGISTER ROUTE
+// Register route
 router.post('/register', [
     check('email').isEmail().not().isEmpty().withMessage('Field can\'t be empty')
         .normalizeEmail({all_lowercase: true}),
@@ -41,16 +41,15 @@ router.post('/register', [
         return res.status(422).json({errors: errors.array()})
     } else {
 
-        let email = req.body.email
+        let email = req.body.email;
         let username = email.split("@")[0]
         let password = await bcrypt.hash(req.body.password, 10)
         let fname = req.body.fname
         let lname = req.body.lname
-
-        /**
-         * ROLE 777 = ADMIN
-         * ROLE 555 = CUSTOMER
-         **/
+        
+        // ROLE 777 = ADMIN
+        // ROLE 555 = CUSTOMER
+        
         helper.database.table('users').insert({
             username: username,
             password: password,
