@@ -5,14 +5,24 @@ const helper = require('../config/helpers')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-
 // Login route
 router.post('/login', [helper.hasAuthFields, helper.isPasswordAndUserMatch], (req, res) => {
     let token = jwt.sign({state: 'true', email: req.body.email, username: req.body.username}, helper.secret, {
         algorithm: 'HS512',
         expiresIn: '4h'
-    });
-    res.json({token: token, auth: true, email: req.body.email, username: req.body.username})
+    })
+    res.json({
+        token: token, 
+        auth: true, 
+        email: req.email, 
+        username: req.username,
+        fname: req.fname,
+        lname: req.lname,
+        photoUrl: req.photoUrl,
+        userId: req.userId,
+        type: req.type,
+        role: req.role
+    })
 })
 
 // Register route
@@ -41,27 +51,31 @@ router.post('/register', [
         return res.status(422).json({errors: errors.array()})
     } else {
 
-        let email = req.body.email;
+        let email = req.body.email
         let username = email.split("@")[0]
         let password = await bcrypt.hash(req.body.password, 10)
         let fname = req.body.fname
         let lname = req.body.lname
-        
+        let typeOfUser = req.body.typeOfUser
+        let photoUrl = req.body.photoUrl === null ? 'https://image.shutterstock.com/image-vector/person-gray-photo-placeholder-man-260nw-1259815156.jpg' : req.body.photoUrl
+
         // ROLE 777 = ADMIN
         // ROLE 555 = CUSTOMER
         
         helper.database.table('users').insert({
             username: username,
-            password: password,
+            password: password || null,
             email: email,
             role: 555,
             lname: lname || null,
-            fname: fname || null
+            fname: fname || null,
+            type: typeOfUser || 'local',
+            photoUrl: photoUrl
         }).then(lastId => {
             if (lastId > 0) {
-                res.status(201).json({message: 'Registration successful.'})
+                res.status(201).json({message: 'Registration successful'})
             } else {
-                res.status(501).json({message: 'Registration failed.'})
+                res.status(501).json({message: 'Registration failed'})
             }
         }).catch(err => res.status(433).json({error: err}))
     }

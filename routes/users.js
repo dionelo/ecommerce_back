@@ -15,11 +15,8 @@ router.get('/', function (req, res) {
     }).catch(err => res.json(err))
 })
 
-/**
- * ROLE 777 = ADMIN
- * ROLE 555 = CUSTOMER
- */
-
+// ROLE 777 = ADMIN
+// ROLE 555 = CUSTOMER
 
 /* GET ONE USER MATCHING ID */
 router.get('/:userId', (req, res) => {
@@ -33,6 +30,25 @@ router.get('/:userId', (req, res) => {
             res.json({message: `NO USER FOUND WITH ID : ${userId}`})
         }
     }).catch(err => res.json(err) )
+})
+
+/* GET ONE USER WITH EMAIL MATCH  */
+router.get('/validate/:email', (req, res) => {
+
+	let email = req.params.email
+
+    database
+        .table('users')
+        .filter({email: email})
+		.get()
+		.then(user => {
+			if (user) {
+                res.json({user: user, status: true})
+            } else {
+                res.json({status: false, user: null})
+            }
+		})
+		.catch(err => res.json(err))
 })
 
 /* UPDATE USER DATA */

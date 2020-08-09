@@ -16,7 +16,7 @@ const swaggerOptions = {
             contact: {
                 name: 'Amazing Developer'
             },
-            servers: "http://localhost:3636"
+            servers: "http://localhost:3000"
         }
     },
     apis: ["app.js", ".routes/*.js"]
@@ -30,7 +30,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept'
 }))
-app.use(logger('combined'))
+app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
